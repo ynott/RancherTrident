@@ -17,7 +17,7 @@ Kubernetesではストレージに関するコンポーネントは３つあり
 
 それぞれの関係を図示し、ここにnamespaceの概念を加えるたものは以下の図になります。
 
-![img](images/2_PersistentVolumeOverview.png)
+![PersistentVolume Overview](images/2_PersistentVolumeOverview.png)
 
 ### 2．DynamicProvisioningとは（渡邊）
 
