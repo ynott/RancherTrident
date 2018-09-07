@@ -6,10 +6,13 @@
 
 MongoDBのインストールにはHelmを使いインストールします。
 
+![MongoDB + StatefulSet](images/4_MongoDBArch.png)
+
+
 ### Helm用設定ファイルの準備
 
 適応する ``values.yaml`` は以下の通りです。
-デフォルトからはdynamic provisioningをするため``storageClass``を変更しています。
+デフォルトからはdynamic provisioningをするため ``storageClass`` を変更しています。
 
 ``` yaml values.yaml
 
@@ -222,7 +225,8 @@ statefulset.apps/mongodb-mongodb-replicaset   3         3         3m
 $ kubectl get statefulset -n mongo-replica
 NAME                         DESIRED   CURRENT   AGE
 mongodb-mongodb-replicaset   3         3         3m
-localadmin@master:~/manifest/mongdb-helm$ kubectl describe statefulset -n mongo-replica
+
+$ kubectl describe statefulset -n mongo-replica
 Name:               mongodb-mongodb-replicaset
 Namespace:          mongo-replica
 CreationTimestamp:  Fri, 27 Jul 2018 20:43:15 +0900
@@ -523,7 +527,7 @@ MongoDB server version: 3.6.6
 
 ``` console
 $ kubectl exec mongodb-mongodb-replicaset-0 -n mongo-replica -- mongo --eval="printjson(db.test.insert({key1: 'trident fail test'}))"
-                                                                              MongoDB shell version v3.6.6
+MongoDB shell version v3.6.6
 connecting to: mongodb://127.0.0.1:27017
 MongoDB server version: 3.6.6
 { "nInserted" : 1 }
