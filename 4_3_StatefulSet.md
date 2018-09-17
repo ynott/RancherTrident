@@ -1,10 +1,10 @@
-## StatefulSetを使ったダイナミックプロビジョニングの例
+## StatefulSetを使ったダイナミックプロビジョニングの例
 
 データが分散され保管されるアーキテクチャの場合、スケールするごとにストレージをプロビジョニングする必要があります。
 
-このセクションではMongoDBのレプリカ数を複数としてどのようにプロビジョニングできるかということデプロイしていきます。
+このセクションではMongoDBのレプリカ数に応じてストレージをMongoDBのレプリカごとにプロビジョニングしデプロイします。
 
-MongoDBのインストールにはHelmを使いインストールします。
+MongoDBのインストールにはHelmを使用しインストールします。
 
 ### MongoDB レプリカセット
 
@@ -12,7 +12,7 @@ MongoDBでは高可用性やデータ可用性を実現する仕組みとしてR
 
 MongoDBクラスタでプライマリからセカンダリへデータをレプリケーションし、有事の際にはフェイルオーバーしデータへのアクセスを継続します。
 
-Kubernetes上ではMongoDBのようなデータレプリケーションをするアプリケーション向けににPVCを割り当てる必要があります。
+Kubernetes上ではMongoDBのようなデータレプリケーションをするアプリケーション向けににPVCを割り当てる必要があります。
 KubernetesのReplicaSetを使用して ``Volume Claim template`` から動的にPVCを作成しコンテナに割り当てることができます。
 
 ![MongoDB StatefulSetのイメージとKubernetes Replicaset](images/4_Mongo_Replicaset.png)
