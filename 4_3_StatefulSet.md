@@ -6,8 +6,18 @@
 
 MongoDBのインストールにはHelmを使いインストールします。
 
-![MongoDB + StatefulSet](images/4_MongoDBArch.png)
+### MongoDB レプリカセット
 
+MongoDBでは高可用性やデータ可用性を実現する仕組みとしてReplicaSetを提供しています。
+
+MongoDBクラスタでプライマリからセカンダリへデータをレプリケーションし、有事の際にはフェイルオーバーしデータへのアクセスを継続します。
+
+Kubernetes上ではMongoDBのようなデータレプリケーションをするアプリケーション向けににPVCを割り当てる必要があります。
+KubernetesのReplicaSetを使用して ``Volume Claim template`` から動的にPVCを作成しコンテナに割り当てることができます。
+
+![MongoDB StatefulSetのイメージとKubernetes Replicaset](images/4_Mongo_Replicaset.png)
+
+- Kubernetes StatefulSet: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/ 
 
 ### Helm用設定ファイルの準備
 
@@ -559,17 +569,18 @@ mongodb-mongodb-replicaset-2   1/1       Running   0          4m        10.244.1
 ここでHelm Chartsで付与されているラベルでPodをすべて削除します。
 
 ``` console
-localadmin@master:~/manifest/mongdb-helm$ kubectl delete po -l "app=mongodb-replicaset,release=mongodb" -n mongo-replica
+$ kubectl delete po -l "app=mongodb-replicaset,release=mongodb" -n mongo-replica
+
 pod "mongodb-mongodb-replicaset-0" deleted
 pod "mongodb-mongodb-replicaset-1" deleted
 pod "mongodb-mongodb-replicaset-2" deleted
-localadmin@master:~/manifest/mongdb-helm$
 ```
 
 Deployment により管理されているため、Podが停止したのを検知して起動されます。
 
 ``` console
 $ kubectl get po --watch-only -n mongo-replica -o wide
+
 NAME                           READY     STATUS        RESTARTS   AGE       IP           NODE
 mongodb-mongodb-replicaset-0   1/1       Terminating   0          7m        10.244.3.6   node2
 mongodb-mongodb-replicaset-1   1/1       Terminating   0         6m        10.244.4.8   node3
@@ -619,16 +630,18 @@ mongodb-mongodb-replicaset-2   1/1       Running   0         27s       10.244.2.
 
 ``` console
 $ kubectl get po -n mongo-replica -o wide
+
 NAME                           READY     STATUS    RESTARTS   AGE       IP           NODE
 mongodb-mongodb-replicaset-0   1/1       Running   0          2m        10.244.4.9   node3
 mongodb-mongodb-replicaset-1   1/1       Running   0          1m        10.244.3.7   node2
 mongodb-mongodb-replicaset-2   1/1       Running   0          1m        10.244.2.6   node1
 ```
 
-テスト前に入れたデータベースの値を確認する。
+テスト前に入れたデータベースの値を確認します。
 
 ``` console
 $ kubectl exec mongodb-mongodb-replicaset-0 -n mongo-replica -- mongo --eval="rs.slaveOk(); db.test.find({key1:{\$exists:true}}).forEach(printjson)"
+
 MongoDB shell version v3.6.6
 connecting to: mongodb://127.0.0.1:27017
 MongoDB server version: 3.6.6
