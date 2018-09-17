@@ -1,7 +1,7 @@
 ## 3．Tridentのコンポーネント・構築/構成
 
 NetAppが提供している **Trident** はOSSとしてGitHubで公開しています。
-オンプレミスでクラウド同等のダイナミックプロビジョニングの仕組みを提供し、特徴的なストレージ機能が使用可能なものです。
+オンプレミスでクラウド同等のダイナミックプロビジョニングの仕組みを提供し、特徴的なストレージ機能が使用可能なものです。
 
 - https://github.io/netapp/trident
 
@@ -100,7 +100,7 @@ vserver modify -vserver [SVM名] -aggr-list [アグリゲート名(vsadminで変
 
 #### SolidFire の設定
 
-SolidFireについては事前準備は今回の構成不要です。
+SolidFireについては事前準備は今回の構成不要です。
 定義ファイルに定義したユーザなどはなければ自動で作成します。
 
 ### 4．Tridentのインストール（渡邊）
@@ -168,7 +168,7 @@ tridentctl -n trident create backend -f setup/backend.json
 #### NFSバックエンドの場合(ONTAPバックエンド)
 
 ``setup``ディレクトリに``ontap-nas-backend.json``を作成します。
-修正する箇所は主に接続するIPとユーザ、パスワードです。
+修正する箇所は主に接続するIPとユーザ、パスワードです。
 
 ``setup/backend.json``を以下のように変更します。
 
@@ -186,7 +186,7 @@ tridentctl -n trident create backend -f setup/backend.json
 
 ```
 
-backend.jsonのを編集後、以下のコマンドを実行しストレージバックエンド登録を行います。
+backend.jsonのを編集後、以下のコマンドを実行しストレージバックエンド登録を行います。
 
 ``` console
 
@@ -196,7 +196,7 @@ tridentctl -n trident create backend -f setup/backend.json
 
 #### iSCSIバックエンドの場合(SolidFireバックエンド)
 
-Tridentでは複数のストレージバックエンドを登録可能です。
+Tridentでは複数のストレージバックエンドを登録可能です。
 NFSバックエンドと同様にiSCSIバックエンドとしてSolidFireを登録します。
 
 ```json solidfire.json
