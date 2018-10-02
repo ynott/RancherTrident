@@ -17,6 +17,9 @@ Tridentの特徴的な機能の１つである、``PVC Fast Cloning``につい�
 
 ここでは実際に使用するマニフェストを提示し、設定すべき項目について説明いたします。
 
+事前に``mysql-pv-claim``を作成しているという前提です。
+
+
 ``` yaml
 apiVersion: v1
 kind: PersistentVolumeClaim
