@@ -17,69 +17,105 @@ Tridentの特徴的な機能の１つである、``PVC Fast Cloning``につい�
 
 ここでは実際に使用するマニフェストを提示し、設定すべき項目について説明いたします。
 
+まずはmysqlのパスワードをsecretに入れます。
+
+```
+$ kubectl create secret generic mysql-pass --from-literal=password=yourpassword -n [ネームスペース]
+```
+
+mysql自体のデプロイメントは以下のようなものをつかいます。
+ここではベースとなるPVC ``mysql-pv-claim``を作成します。
+
 ``` yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysqldatabase
+  labels:
+    app: database
+spec:
+  selector:
+    matchLabels:
+      app: database
+  template:
+    metadata:
+      labels:
+        app: database
+    spec:
+      containers:
+      - image: mysql:8
+        name: mysqldatabase
+        env:
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-pass
+              key: password
+        ports:
+        - containerPort: 3306
+          name: mysqldatabase
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pv-claim
+---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: oracle-pv-claim-clone
+  name: mysql-pv-claim
   labels:
-    app: database-cloned
+    app: database
   annotations:
-    trident.netapp.io/reclaimPolicy: "Delete"
+    trident.netapp.io/reclaimPolicy: "Retain"
     trident.netapp.io/exportPolicy: "default"
-    trident.netapp.io/cloneFromPVC: "oracle-pv-claim"  
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 2Ti
-  storageClassName: ontap-gold
+      storage: 20Gi
+  storageClassName: ontap-basic
 ---
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Service
 metadata:
-  name:  oracle-se2-cloned
+  name: mysql
   labels:
-    app:  database-cloned
+    app: database
 spec:
+  ports:
+    - port: 3306
   selector:
-    matchLabels:
-      app: database-cloned
-  template:
-    metadata:
-      labels:
-        app:  database-cloned
-    spec:
-      containers:
-      - image: docker-registry.default.svc:5000/default/oracledb:12.2.0.1-se2
-        name: oracle-se2
-        env:
-        - name: ORACLE_SID
-          value: "tridentsid"
-        - name: ORACLE_PDB
-          value: "tridentpdb"
-        - name: ORACLE_PWD
-          value: "changeme"
-        ports:
-        - containerPort:  1521
-          name:  oraclelistener
-        - containerPort:  5500
-          name:  manager
-        volumeMounts:
-        - mountPath: /opt/oracle/oradata
-          name: oradata
-      volumes:
-        - name: oradata
-          persistentVolumeClaim:
-            claimName: oracle-pv-claim-clone
+    app: database
+    tier: mysql
+  type: NodePort
 ```
 
-annotation を設定し、コピーもとのPVCを指定することで実現できます。
+起動後にデータを投入し元となるデータベースを作成します。
+
+クローン元のPVCにはI/Oが発生していないことを強く推奨します。
+
+クローニングはPVCのannotationに ``netapp.io/cloneFromPVC`` を設定し、コピーもとのPVCを指定することで実現できます。
 
 ``` yaml
-
 annotation:
-    netapp.io/cloneFromPVC: XXX
+    netapp.io/cloneFromPVC: mysql-pv-claim
 ```
 
+上記の通りマニフェストを複数展開する方法もありますが、
+Helm を使うことでより簡単に展開することができます。
+
+以下の２つの項目をhelm実行時に設定します。
+
+- persistence.storageClass=ontap-basic
+- persistence.annotations={netapp.io/cloneFromPVC: XXX}
+
+```
+$ helm install stable/mysql --name [リリース名] --namespace [ネームスペース] --set persistence.storageClass=ontap-basic,persistence.annotations={"netapp.io/cloneFromPVC: mysql-pv-claim"}
+```
+このようにマニフェストを随時書くのでははなく、必要部分（今回はストレージクラス名とannotation) のみを定義し迅速に展開することができます。
+
+今回の例はデータベースを例として説明しましたが、大量のデータ・セットを配るようなオペレーションをするときにも同様の手段で実施することができます。
