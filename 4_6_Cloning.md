@@ -1,4 +1,4 @@
-## Trident Fast PVC Cloning の使い方とユースケース
+## Trident Fast PVC Cloningの使い方とユースケース
 
 Tridentの特徴的な機能の１つである、``PVC Fast Cloning``について紹介します。
 
@@ -77,7 +77,7 @@ spec:
   resources:
     requests:
       storage: 20Gi
-  storageClassName: ontap-basic
+  storageClassName: ontap-gold
 ---
 apiVersion: v1
 kind: Service
@@ -100,22 +100,23 @@ spec:
 
 クローニングはPVCのannotationに ``netapp.io/cloneFromPVC`` を設定し、コピーもとのPVCを指定することで実現できます。
 
+以下の記述を追記します。
+
 ``` yaml
 annotation:
     netapp.io/cloneFromPVC: mysql-pv-claim
 ```
 
-上記の通りマニフェストを複数展開する方法もありますが、
-Helm を使うことでより簡単に展開することができます。
-
+上記の通りマニフェストを複数展開する方法もありますが、Helm を使うことでより簡単に展開することができます。
 以下の２つの項目をhelm実行時に設定します。
 
-- persistence.storageClass=ontap-basic
+- persistence.storageClass=ontap-gold
 - persistence.annotations={netapp.io/cloneFromPVC: XXX}
 
-```
+``` console
 $ helm install stable/mysql --name [リリース名] --namespace [ネームスペース] --set persistence.storageClass=ontap-basic,persistence.annotations={"netapp.io/cloneFromPVC: mysql-pv-claim"}
 ```
-このようにマニフェストを随時書くのでははなく、必要部分（今回はストレージクラス名とannotation) のみを定義し迅速に展開することができます。
+
+マニフェストを随時書くのでははなく、上記のように必要部分（今回はストレージクラス名とannotation) のみを定義し迅速に展開することができます。
 
 今回の例はデータベースを例として説明しましたが、大量のデータ・セットを配るようなオペレーションをするときにも同様の手段で実施することができます。
