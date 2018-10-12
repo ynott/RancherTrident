@@ -263,6 +263,7 @@ parameters:
   media: "ssd"
   provisioningType: "thin"
   snapshots: "true"
+  clones: "true"
 ```
 
 ```tridentctl```ユーティリティを使用してバックエンド登録実施。
