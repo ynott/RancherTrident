@@ -98,23 +98,23 @@ spec:
 
 クローン元のPVCにはI/Oが発生していないことを強く推奨します。
 
-クローニングはPVCのannotationに ``netapp.io/cloneFromPVC`` を設定し、コピーもとのPVCを指定することで実現できます。
+クローニングはPVCのannotationに ``trident.netapp.io/cloneFromPVC`` を設定し、コピーもとのPVCを指定することで実現できます。
 
 以下の記述を追記します。
 
 ``` yaml
 annotation:
-    netapp.io/cloneFromPVC: mysql-pv-claim
+  trident.netapp.io/cloneFromPVC: mysql-pv-claim
 ```
 
 上記の通りマニフェストを複数展開する方法もありますが、Helm を使うことでより簡単に展開することができます。
 以下の２つの項目をhelm実行時に設定します。
 
 - persistence.storageClass=ontap-gold
-- persistence.annotations={netapp.io/cloneFromPVC: XXX}
+- persistence.annotations={trident.netapp.io/cloneFromPVC: XXX}
 
 ``` console
-$ helm install stable/mysql --name [リリース名] --namespace [ネームスペース] --set persistence.storageClass=ontap-gold --set persistence.annotations."netapp\.io/cloneFromPVC"=[コピー元のPVC名]
+$ helm install stable/mysql --name [リリース名] --namespace [ネームスペース] --set persistence.storageClass=ontap-gold --set persistence.annotations."trident\.netapp\.io/cloneFromPVC"=[コピー元のPVC名]
 ```
 
 マニフェストを随時書くのでははなく、上記のように必要部分（今回はストレージクラス名とannotation) のみを定義し迅速に展開することができます。
