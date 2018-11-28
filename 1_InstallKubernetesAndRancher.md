@@ -95,3 +95,36 @@ Kubeadmを使ったKubernetesクラスターの構築方法については下記
 Installing kubeadm - Kubernetes  
 https://kubernetes.io/docs/setup/independent/install-kubeadm/
 
+次に、作った Kubernetesクラスターを Rancherから認識できるようにインポートします。
+Globalから **Add Cluster** ボタンを押します。
+
+![クラスターインポート画面](https://raw.githubusercontent.com/ynott/RancherTrident/master/images/Add-Cluster-Dashboard.png)
+
+クラスター追加画面が出てきますが、右上の **IMPORT** ボタンを押します。
+
+![クラスター追加画面](https://raw.githubusercontent.com/ynott/RancherTrident/master/images/Import-Cluster.png)
+
+次に、Cluster Nameを指定して **Create** ボタンを押します(Memberは自分一人で使う分には追加する必要はありません)。
+
+![クラスター名設定画面](https://raw.githubusercontent.com/ynott/RancherTrident/master/images/Set-ClusterName.png)
+
+以下のページで表示されたコマンドを実行します。
+kubectlコマンドは事前にインストールし、kubernetesに接続できるよう設定しておいてください。
+
+![インポートコマンド画面](https://raw.githubusercontent.com/ynott/RancherTrident/master/images/Import-command.png)
+
+```
+kubectl create clusterrolebinding cluster-admin-binding --clusterrole cluster-admin --user [USER_ACCOUNT]
+```
+
+上記の [USER_ACCOUNT] は上記コマンドを実行するユーザーIDを指定します。
+
+上記のコマンドで証明書の問題のエラーが発生する場合は、以下のコマンドを実行して下さい。
+
+```
+curl --insecure -sfL https://xxxxxxxxxxxxxx.com/v3/import/XXXXXXXXXXXXXXXXXXXXXXXXX.yaml | kubectl apply -f -
+```
+
+KubernetesクラスターがRancherにインポートされると以下のようにGlobalのClusterダッシュボードにインポートされたクラスターが表示されます。
+
+![クラスターインポート完了画面](https://raw.githubusercontent.com/ynott/RancherTrident/master/images/cluster-list.png)
