@@ -32,7 +32,7 @@ Rancherのメニュー構成で確認したクラスターのメニューから�
 
 プロジェクトメニューにいくには、グローバルメニューからデフォルトで用意されている「Default」プロジェクトに切り換えます。
 
-4_Project.png
+![](https://raw.githubusercontent.com/ynott/RancherTrident/master/images/4_Project.png)
 
 ### 4. コンテナーをデプロイする
 
@@ -40,21 +40,21 @@ Rancherのメニュー構成で確認したクラスターのメニューから�
 
 ![](https://raw.githubusercontent.com/ynott/RancherTrident/master/images/4_Workload-Workload-deploy.png)
 
-![](https://raw.githubusercontent.com/ynott/RancherTrident/master/images/4_Workload-Deploy.png)
+次の画面でワークロードデプロイに名前とイメージを指定します。
 
-上記ワークロードデプロイに名前とイメージを指定します。
+![](https://raw.githubusercontent.com/ynott/RancherTrident/master/images/4_Workload-Deploy.png)
 
 ### 5. ボリュームの割り当て
 
-「4. コンテナーをデプロイするの」画面からボリュームをクリックします。
+次にボリュームを割り当てます。「ボリューム」をクリックします。「ボリュームを追加」をクリックして、「新しい永続ボリューム(要求)を作成」をクリックします。
 
 ![](https://raw.githubusercontent.com/ynott/RancherTrident/master/images/4_dynamic-pv-create-03.png)
 
-「ボリュームを追加」をクリックして、「新しい永続ボリューム(要求)を作成」をクリックします。
+
+名前とストレージクラスを指定して、容量を入力します。ソースは、「新しい永続ボリュームの作成にストレージクラスを使用」を選択します。
 
 ![](https://raw.githubusercontent.com/ynott/RancherTrident/master/images/4_dynamic-pv-create-04.png)
 
-名前とストレージクラスを指定して、容量を入力します。ソースは、「新しい永続ボリュームの作成にストレージクラスを使用」を選択します。
 「定義」ボタンをクリックします。
 
 ### 5. ボリュームのマウント先を指定
@@ -65,8 +65,13 @@ Rancherのメニュー構成で確認したクラスターのメニューから�
 
 マウントポイントを指定します。これがコンテナー側から見られるパスになります。さらにその先にパスがある場合は、Sub Path in Volume を指定します。
 
+ワークロードをデプロイの一番下にある「起動」を押してコンテナーを起動します。
+
+![](https://raw.githubusercontent.com/ynott/RancherTrident/master/images/4_RunContainer.png)
+
 ### 6. マウントを確認
 
 起動したコンテナーに接続して、マウント状況を確認する
 
 ![](https://raw.githubusercontent.com/ynott/RancherTrident/master/images/4_Execute-shell.png)
+
