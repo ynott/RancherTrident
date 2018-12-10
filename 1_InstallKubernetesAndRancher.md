@@ -7,13 +7,11 @@ Kubernetesクラスターの構成を以下のように構成する。
 
 ![Kubernetesサーバー構成](https://raw.githubusercontent.com/ynott/RancherTrident/master/images/KubernetesServers.png)
 
-### 1. Kubernetesのインストール
+## 2. Kubernetesのインストール
 
 Kubernetesクラスターのインストールには、kubeadmでインストールを行った。特別な操作はせず通常の方法でセットアップしたため、ここでは操作方法などは省略する。
 
-## 2. Rancherの概要
-
-### 2. Rancher の特徴
+## 2. Rancherの特徴
 
 Rancher は オープンソースで開発されているKubernetesを管理するアプリケーションです。Enterprise Kubernetes made Easy を合い言葉にKubernetesの機能を企業ユースで利用しやすく管理する機能が備わっています。  
 
